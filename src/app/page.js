@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import CourseCard from '@/components/CourseCard'
+import CourseCard from '../components/CourseCard'
 
 export default function Home() {
   const featuredCourses = [
