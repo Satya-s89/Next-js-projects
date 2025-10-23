@@ -5,20 +5,22 @@ const Sidebar = ({ role, children }) => {
   if (role === 'admin') {
     links = (
       <>
-        <a href="/admin_dashboard" className="text-blue-600 hover:text-blue-800">Admin Dashboard</a>
-        <a href="/edit_lesson" className="text-blue-600 hover:text-blue-800">Edit Lessons</a>
-        <a href="/manage_students" className="text-blue-600 hover:text-blue-800">Manage Users</a>
-        <a href="/logout" className="text-blue-600 hover:text-blue-800">Logout</a>
+        <a href="/admin-dashboard" className="sidebar-link active">📊 Admin Dashboard</a>
+        <a href="/edit_lesson" className="sidebar-link">📝 Edit Lessons</a>
+        <a href="/manage_students" className="sidebar-link">👥 Manage Users</a>
+        <a href="/analytics" className="sidebar-link">📈 Analytics</a>
+        <a href="/settings" className="sidebar-link">⚙️ Settings</a>
+        <a href="/logout" className="sidebar-link text-red-600 hover:bg-red-50">🚪 Logout</a>
       </>
     );
   } else if (role === 'student') {
     links = (
       <>
-        <a href="/student_dashboard" className="text-green-600 hover:text-green-800">Student Dashboard</a>
-        <a href="/courses" className="text-green-600 hover:text-green-800">My Courses</a>
-        <a href="/grades" className="text-green-600 hover:text-green-800">Grades</a>
-        <a href="/profile" className="text-green-600 hover:text-green-800">Profile</a>
-        <a href="/logout" className="text-green-600 hover:text-green-800">Logout</a>
+        <a href="/student_dashboard" className="sidebar-link active">📊 Student Dashboard</a>
+        <a href="/courses" className="sidebar-link">📚 My Courses</a>
+        <a href="/grades" className="sidebar-link">🎯 Grades</a>
+        <a href="/profile" className="sidebar-link">👤 Profile</a>
+        <a href="/logout" className="sidebar-link text-red-600 hover:bg-red-50">🚪 Logout</a>
       </>
     );
   } else {
@@ -28,8 +30,8 @@ const Sidebar = ({ role, children }) => {
   if (!links) return null;
 
   return (
-    <aside className="w-64 bg-gray-100 h-full p-4 hidden md:block border-r">
-      <nav className="flex flex-col gap-4">
+    <aside className="sidebar w-64 p-4 hidden md:block">
+      <nav className="flex flex-col space-y-1">
         {links}
       </nav>
       {children}

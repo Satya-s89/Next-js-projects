@@ -33,29 +33,29 @@ export default function Home() {
   ]
 
   return (
-    <div className="space-y-12">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl">
-        <h1 className="text-5xl font-bold mb-6">
+      <section className="hero-section">
+        <h1 className="hero-title">
           Welcome to Learning Management System
         </h1>
-        <p className="text-xl mb-8 max-w-2xl mx-auto">
+        <p className="hero-subtitle">
           Discover, learn, and grow with our comprehensive online courses designed by industry experts.
         </p>
-        <div className="space-x-4">
-          <Link href="/login" className="btn-primary bg-white text-primary-600 hover:bg-gray-100">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/signin" className="btn-primary text-center">
             Get Started
           </Link>
-          <Link href="/courses" className="btn-secondary bg-primary-500 hover:bg-primary-400 text-white">
+          <Link href="/courses" className="btn-secondary bg-white text-blue-600 hover:bg-gray-100 text-center">
             Browse Courses
           </Link>
         </div>
       </section>
 
       {/* Featured Courses */}
-      <section>
-        <h2 className="text-3xl font-bold text-center mb-12">Featured Courses</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="px-6">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Featured Courses</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {featuredCourses.map(course => (
             <CourseCard key={course.id} course={course} />
           ))}
@@ -63,23 +63,23 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Why Choose Our Platform?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="card text-center">
-            <div className="text-4xl mb-4">🎓</div>
-            <h3 className="text-xl font-semibold mb-2">Expert Instructors</h3>
-            <p className="text-gray-600">Learn from industry professionals with years of experience</p>
+      <section className="py-20 px-6">
+        <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Why Choose Our Platform?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="feature-card">
+            <div className="feature-icon">🎓</div>
+            <h3 className="feature-title">Expert Instructors</h3>
+            <p className="feature-description">Learn from industry professionals with years of experience</p>
           </div>
-          <div className="card text-center">
-            <div className="text-4xl mb-4">📱</div>
-            <h3 className="text-xl font-semibold mb-2">Mobile Learning</h3>
-            <p className="text-gray-600">Access courses anywhere, anytime on any device</p>
+          <div className="feature-card">
+            <div className="feature-icon">📱</div>
+            <h3 className="feature-title">Mobile Learning</h3>
+            <p className="feature-description">Access courses anywhere, anytime on any device</p>
           </div>
-          <div className="card text-center">
-            <div className="text-4xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold mb-2">Certificates</h3>
-            <p className="text-gray-600">Earn recognized certificates upon course completion</p>
+          <div className="feature-card">
+            <div className="feature-icon">🏆</div>
+            <h3 className="feature-title">Certificates</h3>
+            <p className="feature-description">Earn recognized certificates upon course completion</p>
           </div>
         </div>
       </section>
