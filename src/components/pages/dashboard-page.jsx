@@ -7,27 +7,27 @@ import Card from '../global/card';
 
 const DashboardPage = () => (
   <MainLayout sidebar={<Sidebar role="admin" />} navbar={<Navbar />}>
-    <div className="dashboard-header">
-      <h1 className="dashboard-title">Admin Dashboard</h1>
+    <div className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
       <p className="text-gray-600">Welcome back! Here's what's happening with your LMS today.</p>
     </div>
     
-    <div className="dashboard-grid">
-      <div className="stat-card">
-        <div className="stat-number">1,234</div>
-        <div className="stat-label">Total Students</div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 shadow-lg">
+        <div className="text-3xl font-bold mb-2">1,234</div>
+        <div className="text-blue-100 text-sm uppercase tracking-wide">Total Students</div>
       </div>
-      <div className="stat-card bg-gradient-to-r from-green-500 to-green-600">
-        <div className="stat-number">56</div>
-        <div className="stat-label">Active Courses</div>
+      <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-6 shadow-lg">
+        <div className="text-3xl font-bold mb-2">56</div>
+        <div className="text-green-100 text-sm uppercase tracking-wide">Active Courses</div>
       </div>
-      <div className="stat-card bg-gradient-to-r from-purple-500 to-purple-600">
-        <div className="stat-number">87%</div>
-        <div className="stat-label">Completion Rate</div>
+      <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-6 shadow-lg">
+        <div className="text-3xl font-bold mb-2">87%</div>
+        <div className="text-purple-100 text-sm uppercase tracking-wide">Completion Rate</div>
       </div>
-      <div className="stat-card bg-gradient-to-r from-orange-500 to-orange-600">
-        <div className="stat-number">$12,450</div>
-        <div className="stat-label">Revenue</div>
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl p-6 shadow-lg">
+        <div className="text-3xl font-bold mb-2">$12,450</div>
+        <div className="text-orange-100 text-sm uppercase tracking-wide">Revenue</div>
       </div>
     </div>
     
