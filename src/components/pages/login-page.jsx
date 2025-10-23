@@ -35,14 +35,13 @@ const LoginPage = () => {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="max-w-md mx-auto mt-16 bg-white">
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md">
-          <h2 className="text-2xl text-black font-bold mb-6 text-center">Sign In</h2>
+    <div className="signin-container">
+      <div className="signin-form">
+        <form onSubmit={handleSubmit}>
+          <h2 className="signin-title">Sign In</h2>
           
           {error && (
-            <div className="mb-4 text-red-600 text-center text-sm" role="alert">
+            <div className="signin-error" role="alert">
               {error}
             </div>
           )}
@@ -68,11 +67,11 @@ const LoginPage = () => {
             required
           />
           
-          <Button type="submit" disabled={isLoading}>
+          <button type="submit" disabled={isLoading} className="signin-button">
             {isLoading ? 'Signing in...' : 'Sign In'}
-          </Button>
+          </button>
           
-          <div className="mt-4 text-center text-sm text-gray-600">
+          <div className="mt-6 text-center text-sm text-gray-600">
             Don&apos;t have an account?{' '}
             <button
               type="button"
@@ -84,7 +83,7 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
