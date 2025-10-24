@@ -1,4 +1,5 @@
 import './globals.css'
+import connectToDatabase from '../../utils/mongodb';
 
 export const metadata = {
   title: 'Learning Management System',
@@ -6,6 +7,10 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  connectToDatabase()
+    .then(() => console.log('✅ MongoDB connection established'))
+    .catch((err) => console.error('❌ MongoDB connection failed:', err));
+
   return (
     <html lang="en">
       <body>
