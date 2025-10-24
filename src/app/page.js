@@ -1,19 +1,86 @@
+import Link from 'next/link'
+import CourseCard from '../components/CourseCard'
+import '../styles/home.css'
+
 export default function Home() {
+  const featuredCourses = [
+    {
+      id: 1,
+      title: "Introduction to Web Development",
+      description: "Learn the fundamentals of HTML, CSS, and JavaScript",
+      instructor: "John Doe",
+      duration: "8 weeks",
+      level: "Beginner",
+      image: "/course-1.jpg"
+    },
+    {
+      id: 2,
+      title: "Advanced React Development",
+      description: "Master React hooks, context, and advanced patterns",
+      instructor: "Jane Smith",
+      duration: "12 weeks",
+      level: "Advanced",
+      image: "/course-2.jpg"
+    },
+    {
+      id: 3,
+      title: "Database Design with MongoDB",
+      description: "Learn NoSQL database design and optimization",
+      instructor: "Mike Johnson",
+      duration: "6 weeks",
+      level: "Intermediate",
+      image: "/course-3.jpg"
+    }
+  ]
+
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-900">
-          Learning Management System
+    <div className="home-container">
+      <section className="hero-section">
+        <h1 className="hero-title">
+          Welcome to Learning Management System
         </h1>
-        <p className="text-xl text-center text-gray-600 mb-8">
-          Welcome to your learning platform
+        <p className="hero-subtitle">
+          Discover, learn, and grow with our comprehensive online courses designed by industry experts.
         </p>
-        <div className="text-center">
-          <a href="/dashboard" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-            Go to Dashboard
-          </a>
+        <div className="hero-buttons">
+          <Link href="/signin" className="hero-button primary">
+            Get Started
+          </Link>
+          <Link href="/courses" className="hero-button secondary">
+            Browse Courses
+          </Link>
         </div>
-      </div>
+      </section>
+
+      <section className="courses-section">
+        <h2 className="section-title">Featured Courses</h2>
+        <div className="courses-grid">
+          {featuredCourses.map(course => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
+      </section>
+
+      <section className="features-section">
+        <h2 className="section-title">Why Choose Our Platform?</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <span className="feature-icon">🎓</span>
+            <h3 className="feature-title">Expert Instructors</h3>
+            <p className="feature-description">Learn from industry professionals with years of experience</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-icon">📱</span>
+            <h3 className="feature-title">Mobile Learning</h3>
+            <p className="feature-description">Access courses anywhere, anytime on any device</p>
+          </div>
+          <div className="feature-card">
+            <span className="feature-icon">🏆</span>
+            <h3 className="feature-title">Certificates</h3>
+            <p className="feature-description">Earn recognized certificates upon course completion</p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

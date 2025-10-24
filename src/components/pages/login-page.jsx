@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '../layout/navbar';
 import InputField from '../global/input-field';
 import Button from '../global/button';
+import '../../styles/signin.css';
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -27,7 +27,6 @@ const LoginPage = () => {
     
     setIsLoading(true);
     
-    // Simulate authentication
     setTimeout(() => {
       console.log('Login attempt:', form);
       setIsLoading(false);
@@ -38,7 +37,7 @@ const LoginPage = () => {
     <div className="signin-container">
       <div className="signin-form">
         <form onSubmit={handleSubmit}>
-          <h2 className="signin-title">Sign In</h2>
+          <h2 className="signin-title">Welcome Back</h2>
           
           {error && (
             <div className="signin-error" role="alert">
@@ -46,40 +45,48 @@ const LoginPage = () => {
             </div>
           )}
           
-          <InputField
-            label="Email"
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            disabled={isLoading}
-            required
-          />
-          <InputField
-            label="Password"
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            disabled={isLoading}
-            required
-          />
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              disabled={isLoading}
+              required
+              className={`form-input ${error && !form.email ? 'error' : ''}`}
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="form-label" htmlFor="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              disabled={isLoading}
+              required
+              className={`form-input ${error && !form.password ? 'error' : ''}`}
+            />
+          </div>
           
           <button type="submit" disabled={isLoading} className="signin-button">
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
           
-          <div className="mt-6 text-center text-sm text-gray-600">
-            Don&apos;t have an account?{' '}
-            <button
-              type="button"
+          <div className="signin-footer">
+            Don't have an account?{' '}
+            <span
               onClick={() => router.push('/signup')}
-              className="text-blue-600 hover:text-blue-800 underline"
+              className="signin-link"
             >
               Sign Up
-            </button>
+            </span>
           </div>
         </form>
       </div>
