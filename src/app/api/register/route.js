@@ -1,81 +1,108 @@
 import { NextResponse } from 'next/server';
-
-// Mock user storage
-let users = [];
+import connectToDatabase from '../../../../utils/mongodb';
+import User from '../../models/User';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request) {
   try {
-    const { name, email, password, role } = await request.json();
-    
+    const body = await request.json();
+    const { email, password, name, role } = body;
+
     // Validation
-    if (!name || !email || !password || !role) {
+    if (!email || !password || !name || !role) {
+      console.log('❌ Registration failed: Missing required fields');
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
       );
     }
-    
-    // Email validation
+
+    if (!['student', 'admin'].includes(role)) {
+      console.log('❌ Registration failed: Invalid role -', role);
+      return NextResponse.json(
+        { error: 'Invalid role selected' },
+        { status: 400 }
+      );
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('❌ Registration failed: Invalid email format -', email);
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
       );
     }
-    
-    // Password validation
+
     if (password.length < 6) {
+      console.log('❌ Registration failed: Password too short');
       return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
+        { error: 'Password must be at least 6 characters long' },
         { status: 400 }
       );
     }
-    
-    // Role validation
-    if (role !== 'student' && role !== 'admin') {
-      return NextResponse.json(
-        { error: 'Role must be student or admin' },
-        { status: 400 }
-      );
-    }
-    
+
+    // Log registration attempt
+    console.log('🔄 New user registration attempt:', {
+      email,
+      name,
+      role,
+      timestamp: new Date().toISOString()
+    });
+
+    // Connect to MongoDB
+    console.log('🔄 Connecting to MongoDB...');
+    await connectToDatabase();
+    console.log('✅ Connected to MongoDB');
+
     // Check if user already exists
-    if (users.find(user => user.email === email)) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      console.log('❌ Registration failed: Email already exists -', email);
       return NextResponse.json(
         { error: 'User already exists' },
         { status: 400 }
       );
     }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
     
     // Create new user
-    const newUser = {
-      id: users.length + 1,
-      name,
+    const newUser = await User.create({
       email,
-      password, // In real app, hash this
+      password: hashedPassword,
+      name,
       role,
-      createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    
-    // Log to terminal
-    console.log('New user registered:', {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-      createdAt: newUser.createdAt
     });
-    
+
+    console.log('✅ User registration successful:', {
+      id: newUser._id.toString(),
+      email: newUser.email,
+      name: newUser.name,
+      role: newUser.role,
+      timestamp: new Date().toISOString()
+    });
+
+    // Determine redirect message
+    const dashboard = role === 'admin' ? 'admin_dashboard' : 'student_dashboard';
+    const redirectMessage = `User registered successfully. Redirecting to /${dashboard}`;
+
     return NextResponse.json(
-      { message: 'User registered successfully', userId: newUser.id },
+      { 
+        message: redirectMessage,
+        user: {
+          id: newUser._id.toString(),
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role
+        }
+      },
       { status: 201 }
     );
-    
+
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ Registration error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

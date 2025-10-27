@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import InputField from '../../components/global/input-field';
 import Button from '../../components/global/button';
 import '../../styles/signin.css';
@@ -40,13 +41,34 @@ export default function SignUpPage() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        setSuccess('Registration successful! Redirecting to sign in...');
+      if (!response.ok) {
+        setError(data.error || 'Registration failed');
+        return;
+      }
+
+      setSuccess(data.message || 'Registration successful! Logging you in...');
+
+      // Wait for user to see the message
+      await new Promise((res) => setTimeout(res, 2000));
+
+      // Automatically sign in the user after registration
+      const signInResponse = await signIn('credentials', {
+        redirect: false,
+        email: form.email,
+        password: form.password,
+      });
+
+      if (signInResponse?.ok) {
+        if (form.role === 'admin') {
+          router.push('/admin-dashboard');
+        } else {
+          router.push('/student-dashboard');
+        }
+      } else {
+        setError('Registration succeeded, but automatic login failed. Please sign in manually.');
         setTimeout(() => {
           router.push('/signin');
         }, 2000);
-      } else {
-        setError(data.error || 'Registration failed');
       }
     } catch (err) {
       setError('Network error. Please try again.');

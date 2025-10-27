@@ -1,107 +1,84 @@
-import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { connectToDatabase } from '../../../../lib/mongodb'
-import User from '../../../../models/User'
-import bcrypt from 'bcryptjs'
+import CredentialsProvider from "next-auth/providers/credentials";
+import NextAuth from 'next-auth/next';
+import connectToDatabase from '../../../../utils/mongodb';
+import User from '../../models/User';
+import bcrypt from 'bcryptjs';
 
-const handler = NextAuth({
+export const NEXT_AUTH = {
   providers: [
     CredentialsProvider({
-      name: 'credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          throw new Error("Email and password are required");
         }
-
+        
         try {
-          await connectToDatabase()
-          
-          // Find user in database
-          const user = await User.findOne({ email: credentials.email })
-          
-          if (!user) {
-            // For demo purposes, create hardcoded users
-            const demoUsers = [
-              {
-                id: '1',
-                email: 'admin@lms.com',
-                password: 'admin123',
-                name: 'Admin User',
-                role: 'admin'
-              },
-              {
-                id: '2',
-                email: 'student@lms.com',
-                password: 'student123',
-                name: 'Student User',
-                role: 'student'
-              },
-              {
-                id: '3',
-                email: 'instructor@lms.com',
-                password: 'instructor123',
-                name: 'Instructor User',
-                role: 'instructor'
-              }
-            ]
-
-            const demoUser = demoUsers.find(u => u.email === credentials.email)
-            if (demoUser && demoUser.password === credentials.password) {
-              return {
-                id: demoUser.id,
-                email: demoUser.email,
-                name: demoUser.name,
-                role: demoUser.role
-              }
-            }
-            return null
-          }
-
-          // Verify password
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-          
-          if (!isPasswordValid) {
-            return null
-          }
-
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: user.name,
-            role: user.role
-          }
-        } catch (error) {
-          console.error('Authentication error:', error)
-          return null
+          await connectToDatabase();
+          console.log('Connected to MongoDB for authentication');
+        } catch (err) {
+          console.error('MongoDB connection error:', err);
+          throw new Error('Database connection failed');
         }
+        
+        const user = await User.findOne({ email: credentials.email }).lean();
+        if (!user) {
+          console.log('Login failed for email:', credentials.email, '- Invalid credentials');
+          return null;
+        }
+        
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isPasswordValid) {
+          console.log('Login failed for email:', credentials.email, '- Invalid password');
+          return null;
+        }
+        
+        console.log('Login successful for user:', {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          timestamp: new Date().toISOString()
+        });
+        
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
       }
     })
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt'
+    strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
+        token.name = user.name;
+        token.role = user.role;
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub
-        session.user.role = token.role
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.id = token.sub;
+        session.user.role = token.role;
       }
-      return session
+      return session;
     }
   },
   pages: {
-    signIn: '/login'
-  }
-})
+    signIn: '/signin',
+  },
+};
 
+const handler = NextAuth(NEXT_AUTH);
 export { handler as GET, handler as POST }
