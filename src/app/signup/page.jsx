@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import toast from 'react-hot-toast';
 import InputField from '../../components/global/input-field';
 import Button from '../../components/global/button';
 import '../../styles/signin.css';
@@ -13,22 +14,26 @@ export default function SignUpPage() {
     password: '',
     role: 'student'
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError('');
-    setSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    
+    if (!form.email || !form.password || !form.name || !form.role) {
+      toast.error('All fields are required.');
+      return;
+    }
+    
     setIsLoading(true);
+  
+    const loadingToast = toast.loading('Creating your account...', {
+      duration: Infinity,
+    });
 
     try {
       const response = await fetch('/api/register', {
@@ -42,16 +47,16 @@ export default function SignUpPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Registration failed');
+        toast.dismiss(loadingToast);
+        toast.error(data.error || 'Registration failed. Please try again.');
         return;
       }
 
-      setSuccess(data.message || 'Registration successful! Logging you in...');
+      toast.dismiss(loadingToast);
+      const loginToast = toast.loading('Registration successful! Logging you in...', {
+        duration: Infinity,
+      });
 
-      // Wait for user to see the message
-      await new Promise((res) => setTimeout(res, 2000));
-
-      // Automatically sign in the user after registration
       const signInResponse = await signIn('credentials', {
         redirect: false,
         email: form.email,
@@ -59,19 +64,26 @@ export default function SignUpPage() {
       });
 
       if (signInResponse?.ok) {
-        if (form.role === 'admin') {
-          router.push('/admin-dashboard');
-        } else {
-          router.push('/student-dashboard');
-        }
+        toast.dismiss(loginToast);
+        toast.success(`Welcome ${form.name}! Redirecting to your dashboard...`);
+        setTimeout(() => {
+          if (form.role === 'admin') {
+            router.push('/admin-dashboard');
+          } else {
+            router.push('/student-dashboard');
+          }
+        }, 1000);
       } else {
-        setError('Registration succeeded, but automatic login failed. Please sign in manually.');
+        toast.dismiss(loginToast);
+        toast.error('Registration succeeded, but automatic login failed. Please sign in manually.');
         setTimeout(() => {
           router.push('/signin');
         }, 2000);
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      toast.dismiss(loadingToast);
+      toast.error('An unexpected error occurred. Please try again.');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -81,19 +93,7 @@ export default function SignUpPage() {
     <div className="signin-container">
       <div className="signin-form">
         <form onSubmit={handleSubmit}>
-          <h2 className="signin-title">Create Account</h2>
-          
-          {error && (
-            <div className="signin-error" role="alert">
-              {error}
-            </div>
-          )}
-          
-          {success && (
-            <div className="signin-error" style={{background: '#f0fdf4', color: '#16a34a', borderColor: '#bbf7d0'}} role="alert">
-              {success}
-            </div>
-          )}
+          <h2 className="signin-title">Sign Up</h2>
           
           <div className="form-group">
             <label className="form-label" htmlFor="name">Full Name</label>

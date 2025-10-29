@@ -1,8 +1,8 @@
 "use client"
 import React from 'react';
 import MainLayout from '../layout/main-layout';
-import Sidebar from '../layout/sidebar';
-import Navbar from '../layout/navbar';
+import Sidebar from '../layout/Sidebar';
+import Navbar from '../layout/Navbar';
 import Card from '../global/card';
 import '../../styles/admin-dashboard.css';
 

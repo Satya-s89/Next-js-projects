@@ -1,30 +1,12 @@
 "use client";
-import React, { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import MainLayout from '../layout/main-layout';
-import Sidebar from '../layout/sidebar';
-import Navbar from '../layout/navbar';
+import Sidebar from '../layout/Sidebar';
+import Navbar from '../layout/Navbar';
 import Card from '../global/card';
 import '../../styles/student-dashboard.css';
 
 const StudentDashboardPage = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "loading") return;
-    if (!session || session.user?.role !== "student") {
-      router.replace("/signin");
-    }
-  }, [session, status, router]);
-
-  console.log('Student dashboard access - Session user:', session?.user);
-
-  if (status === "loading" || !session || session.user?.role !== "student") {
-    return <div className="text-center mt-10 text-black">Loading...</div>;
-  }
-
   return (
     <MainLayout sidebar={<Sidebar role="student" />} navbar={<Navbar />}>
       <div className="student-dashboard">

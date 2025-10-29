@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '../../../../utils/mongodb';
-import User from '../../models/User';
+import User from '../../../models/User';
 import bcrypt from 'bcryptjs';
 
 export async function POST(request) {
@@ -85,7 +85,7 @@ export async function POST(request) {
     });
 
     // Determine redirect message
-    const dashboard = role === 'admin' ? 'admin_dashboard' : 'student_dashboard';
+    const dashboard = role === 'admin' ? 'admin-dashboard' : 'student-dashboard';
     const redirectMessage = `User registered successfully. Redirecting to /${dashboard}`;
 
     return NextResponse.json(
